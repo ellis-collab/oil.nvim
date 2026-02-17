@@ -86,9 +86,11 @@ end
 M.posix_to_os_path = function(path)
   if M.is_windows then
     if vim.startswith(path, "/") then
-      local drive = path:match("^/(%a+)")
-      local rem = path:sub(drive:len() + 2)
-      return string.format("%s:%s", drive, rem:gsub("/", "\\"))
+      local drive, rem = path:match("^/(%a)(/.*)$")
+      if drive and rem then
+        return string.format("%s:%s", drive, rem:gsub("/", "\\"))
+      end
+      return path
     else
       local newpath = path:gsub("/", "\\")
       return newpath
